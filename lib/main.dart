@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterblocpaketi/counter_bloc/counter_bloc.dart';
+import 'package:flutterblocpaketi/counter_bloc/counter_event.dart';
+import 'package:flutterblocpaketi/counter_bloc/counter_state.dart';
 
 void main() {
   runApp(BlocPaketi());
@@ -10,40 +14,85 @@ class BlocPaketi extends StatefulWidget {
 }
 
 class _BlocPaketiState extends State<BlocPaketi> {
-  int _sayac = 0;
-
   @override
   Widget build(BuildContext context) {
+    debugPrint("_BlocPaketiState build");
     return MaterialApp(
       title: "Flutter Bloc Paketi",
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+      home:
+          BlocProvider(create: (context) => CounterBloc(), child: MyHomePage()),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    debugPrint("my home page state build ");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Flutter Blog Paketi"),
+      ),
+      floatingActionButton: MyActions(),
+      body: MyCountainerWidge(),
+    );
+  }
+}
+
+class MyCountainerWidge extends StatelessWidget {
+  const MyCountainerWidge({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint("MyCountainerWidge build ");
+    return Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingActionButton(heroTag: 1, onPressed: () {
-              setState(() {
-                _sayac++;
-              });
+            Text("buraya yazı geliyor"),
+            BlocBuilder<CounterBloc, CounterState>(
+                builder: (context, counterState) {
+              return Text(counterState.sayac.toString());
             }),
-            FloatingActionButton(heroTag: 2, onPressed: () {}),
           ],
         ),
-        appBar: AppBar(
-          title: Text("Flutter Blog Paketi"),
-        ),
-        body: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("buraya yazı geliyor"),
-                Text("$_sayac"),
-              ],
-            ),
-          ),
-        ),
       ),
+    );
+  }
+}
+
+class MyActions extends StatelessWidget {
+  const MyActions({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint("my actions build");
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton(
+
+            heroTag: 1,
+            onPressed: () {
+              context.read<CounterBloc>().add(CounterArttir());
+              debugPrint("ON PRESSED ");
+            }),
+        FloatingActionButton(heroTag: 2, onPressed: () {
+          debugPrint("ON PRESSED ");
+          context.read<CounterBloc>().add(CounterAzalt());
+        }),
+      ],
     );
   }
 }
