@@ -4,6 +4,8 @@ import 'package:flutterblocpaketi/counter_bloc/counter_bloc.dart';
 import 'package:flutterblocpaketi/counter_bloc/counter_event.dart';
 import 'package:flutterblocpaketi/counter_bloc/counter_state.dart';
 
+import 'counter_bloc/thema_cubit.dart';
+
 void main() {
   runApp(BlocPaketi());
 }
@@ -17,11 +19,20 @@ class _BlocPaketiState extends State<BlocPaketi> {
   @override
   Widget build(BuildContext context) {
     debugPrint("_BlocPaketiState build");
-    return MaterialApp(
-      title: "Flutter Bloc Paketi",
-      debugShowCheckedModeBanner: false,
-      home:
-          BlocProvider(create: (context) => CounterBloc(), child: MyHomePage()),
+    return BlocProvider(
+      create: (context) => ThemaCubit(),
+      child: BlocBuilder<ThemaCubit, ThemeData>(
+        builder: (context, tema) {
+          return MaterialApp(
+            theme: tema,
+            title: "Flutter Bloc Paketi",
+            debugShowCheckedModeBanner: false,
+            home: BlocProvider(
+
+                create: (context) => CounterBloc(), child: MyHomePage()),
+          );
+        },
+      ),
     );
   }
 }
@@ -82,16 +93,23 @@ class MyActions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
-
             heroTag: 1,
             onPressed: () {
               context.read<CounterBloc>().add(CounterArttir());
-              debugPrint("ON PRESSED ");
+              debugPrint("arttır ");
             }),
-        FloatingActionButton(heroTag: 2, onPressed: () {
-          debugPrint("ON PRESSED ");
-          context.read<CounterBloc>().add(CounterAzalt());
-        }),
+        FloatingActionButton(
+            heroTag: 2,
+            onPressed: () {
+              debugPrint("azalt ");
+              context.read<CounterBloc>().add(CounterAzalt());
+            }),
+        FloatingActionButton(
+            heroTag: 3,
+            onPressed: () {
+              debugPrint(" ULA THEMAYI DEGİSTİR SÜLO");
+              context.read<ThemaCubit>().temaDegistir();
+            }),
       ],
     );
   }
