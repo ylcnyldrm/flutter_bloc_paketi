@@ -4,6 +4,4 @@ class CounterState {
 
  int get sayac => _sayac;
 
-
-
 }

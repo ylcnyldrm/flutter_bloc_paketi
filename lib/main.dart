@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterblocpaketi/counter_bloc/counter_bloc.dart';
 import 'package:flutterblocpaketi/counter_bloc/counter_event.dart';
 import 'package:flutterblocpaketi/counter_bloc/counter_state.dart';
+import 'package:flutterblocpaketi/cubit_plugin/sayici_cubit.dart';
 
 import 'counter_bloc/thema_cubit.dart';
 
@@ -27,9 +28,13 @@ class _BlocPaketiState extends State<BlocPaketi> {
             theme: tema,
             title: "Flutter Bloc Paketi",
             debugShowCheckedModeBanner: false,
-            home: BlocProvider(
-
-                create: (context) => CounterBloc(), child: MyHomePage()),
+            home: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => CounterBloc()),
+                BlocProvider(create: (context) => SayiciCubit()),
+              ],
+              child: MyHomePage(),
+            ),
           );
         },
       ),
@@ -74,6 +79,10 @@ class MyCountainerWidge extends StatelessWidget {
                 builder: (context, counterState) {
               return Text(counterState.sayac.toString());
             }),
+            BlocBuilder<SayiciCubit, SayiciState>(
+                builder: (context, counterState) {
+              return Text(counterState.deger.toString());
+            }),
           ],
         ),
       ),
@@ -109,6 +118,12 @@ class MyActions extends StatelessWidget {
             onPressed: () {
               debugPrint(" ULA THEMAYI DEGİSTİR SÜLO");
               context.read<ThemaCubit>().temaDegistir();
+            }),
+        FloatingActionButton(
+            heroTag: 4,
+            onPressed: () {
+              debugPrint("plugin kullanarak cubit couter uygulaası");
+              context.read<SayiciCubit>().Arttir();
             }),
       ],
     );
